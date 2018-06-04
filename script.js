@@ -1,7 +1,33 @@
 
+/*
+TODO :
+  1) turtle shape can be recaptured with incorrect amount of stones
+       well, at one point this was a bug, but i can't replicate it
+       and i didn't change anything.
+       best guess : i played too fast and it didn't get all the connections.
 
+  2) make faster functions
+       if stones aren't added or replaced properly because it can't keep up
+       that's a big problem.
+       i'm pretty sure the functions and methods in 'checkLiberties()' can be optimized
 
+  3) undo button
 
+  4) THAT'S terror
+
+  5) wouldn't mind making a new go project that runs mainly on
+       keeping track of the move coordinates played             <--
+       and adjusting the board as such                          <-- i think this is key
+         (currently this project just messily
+          does everything all at the same time).
+      everything is very permanent.
+      new project goals : make game state more lucid.
+        be able to edit game state easily
+          e.g. undos
+               move trees
+
+  6) 
+*/
 
 
 let cells = document.querySelectorAll('.cell');
@@ -9,6 +35,9 @@ let cells = document.querySelectorAll('.cell');
 $(cells).on('click', placeStone);
 
 let moves = [];
+
+let blackPrisoners = 0;
+let whitePrisoners = 0;
 
 let turn = 'b';
 let oppose = 'w';
@@ -22,7 +51,7 @@ function placeStone() {
   if (!this.classList.contains('label')) {
     if (turn === 'b') {
       if (!this.classList.contains('w')) {
-        this.style.backgroundImage = "url('blackStone.png')";
+        this.style.backgroundImage = "url('bbs.png')";
         this.classList.add('b');
         checkLiberties(this);
         turn = 'w';
@@ -31,15 +60,18 @@ function placeStone() {
     }
     if (turn === 'w') {
       if (!this.classList.contains('b')) {
-        this.style.backgroundImage = "url('whiteStone.png')";
+        this.style.backgroundImage = "url('bws.png')";
         this.classList.add('w');
         checkLiberties(this);
         turn = 'b';
         oppose = 'w';
       }
     }
-
     moves.push(this.id);
+    let moveCount = document.querySelector('#moveCount');
+    let lastMove = moves[moves.length-1];
+    moveCount.innerHTML = 'move : ' + moves.length;
+    let markLastMove = document.getElementById(lastMove);
   }
 }
 
@@ -66,7 +98,6 @@ function checkLiberties(xNode) {
             }
           });
           xNode.liberties = Array.from(new Set(xNode.liberties));
-
 
           xNode.connected.push(poten.id);
           xNode.connected = xNode.connected.concat(poten.connected);
@@ -110,7 +141,6 @@ function checkLiberties(xNode) {
               cap.liberties.push(poten.id);
             }
             if (cap.classList.contains(oppose)) {
-  
               for (let i = 0; i < poten.connected.length; i++) {
                 let x = poten.connected[i];
                 let y = document.getElementById(x);
@@ -123,33 +153,104 @@ function checkLiberties(xNode) {
                 let connectedLeft = document.getElementById('x' + (parseFloat(connectedCapturedCoords[0]) - 1) + 'y' + connectedCapturedCoords[1]);
         
                 function handleConnectedStones(con) {
-                  if (con.classList.contains(turn)) {
-                    con.liberties.push(y.id);
+                  if (con !== null) {
+                    if (con.classList.contains(turn)) {
+                      con.liberties.push(y.id);
+                    }
                   }
                 }
                 handleConnectedStones(connectedTop);
                 handleConnectedStones(connectedRight);
                 handleConnectedStones(connectedBottom);
                 handleConnectedStones(connectedLeft);
-  
               }
             }
           }
-
         }
         removeStones(topCaptured);
         removeStones(rightCaptured);
         removeStones(bottomCaptured);
         removeStones(leftCaptured);
 
-        poten.style.backgroundImage = "url(grid.png)";
+        poten.style.backgroundImage = "url('grid.png')";
+        if (poten.classList.contains('starPoint')) {
+          poten.style.backgroundImage = "url('starPoint.png')";
+        }
+        if (poten.classList.contains('topLeftCorner')) {
+          poten.style.backgroundImage = "url('topLeftCorner.png')";
+        }
+        if (poten.classList.contains('topEdge')) {
+          poten.style.backgroundImage = "url('topEdge.png')";
+        }
+        if (poten.classList.contains('topRightCorner')) {
+          poten.style.backgroundImage = "url('topRightCorner.png')";
+        }
+        if (poten.classList.contains('rightEdge')) {
+          poten.style.backgroundImage = "url('rightEdge.png')";
+        }
+        if (poten.classList.contains('bottomRightCorner')) {
+          poten.style.backgroundImage = "url('bottomRightCorner.png')";
+        }
+        if (poten.classList.contains('bottomEdge')) {
+          poten.style.backgroundImage = "url('bottomEdge.png')";
+        }
+        if (poten.classList.contains('bottomLeftCorner')) {
+          poten.style.backgroundImage = "url('bottomLeftCorner.png')";
+        }
+        if (poten.classList.contains('leftEdge')) {
+          poten.style.backgroundImage = "url('leftEdge.png')";
+        }
+
+        if (turn === 'b') {
+          if (poten.connected === 0) {
+            blackPrisoners += 1;
+          } else {
+            blackPrisoners += poten.connected.length + 1;
+          }
+        }
+        if (turn === 'w') {
+          if (poten.connected === 0) {
+            whitePrisoners += 1;
+          } else {
+            whitePrisoners += poten.connected.length + 1;
+          }
+        }
+
         poten.classList.remove(oppose);
 
         for (let i = 0; i < poten.connected.length; i++) {
           let x = poten.connected[i];
           let y = document.getElementById(x);
 
-          y.style.backgroundImage = "url(grid.png)";
+          y.style.backgroundImage = "url('grid.png')";
+          if (y.classList.contains('starPoint')) {
+            y.style.backgroundImage = "url('starPoint.png')";
+          }
+          if (y.classList.contains('topLeftCorner')) {
+            y.style.backgroundImage = "url('topLeftCorner.png')";
+          }
+          if (y.classList.contains('topEdge')) {
+            y.style.backgroundImage = "url('topEdge.png')";
+          }
+          if (y.classList.contains('topRightCorner')) {
+            y.style.backgroundImage = "url('topRightCorner.png')";
+          }
+          if (y.classList.contains('rightEdge')) {
+            y.style.backgroundImage = "url('rightEdge.png')";
+          }
+          if (y.classList.contains('bottomRightCorner')) {
+            y.style.backgroundImage = "url('bottomRightCorner.png')";
+          }
+          if (y.classList.contains('bottomEdge')) {
+            y.style.backgroundImage = "url('bottomEdge.png')";
+          }
+          if (y.classList.contains('bottomLeftCorner')) {
+            y.style.backgroundImage = "url('bottomLeftCorner.png')";
+          }
+          if (y.classList.contains('leftEdge')) {
+            y.style.backgroundImage = "url('leftEdge.png')";
+          }
+
           y.classList.remove(oppose);
           y.connected = [];
         }
@@ -167,6 +268,4 @@ function checkLiberties(xNode) {
     y.liberties = xNode.liberties;
   }
 }
-
-
 
