@@ -2,6 +2,7 @@
 * {
 }
 
+/*
 html, body {
   position: fixed;
   top: 0;
@@ -9,6 +10,7 @@ html, body {
   left: 0;
   right: 0;
 }
+*/
 
 body {
   background: url(likeFiveThousandTriangles.png) no-repeat;
@@ -17,13 +19,12 @@ body {
 
 .table {
   display: table;
-  width: 500px;
-  height: 550px; /* have to adjust when adding or deleting labels */
   position: fixed;
-  top: 50px;
+  top: 25px;
   left: 5px;
   right: 5px;
   margin: auto;
+  font-size: 8px;
 }
 
 .row {
@@ -32,11 +33,54 @@ body {
 
 .cell {
   display: table-cell;
-  background: url(grid.png) no-repeat center center;
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   text-align: center;
   vertical-align: middle;
+}
+
+.board:hover {
+  background: url(bgs.png) no-repeat center center;
+}
+
+.grid {
+  background: url(grid.png) no-repeat center center;  
+}
+
+.starPoint {
+  background: url(starPoint.png) no-repeat center center;    
+}
+
+.topLeftCorner {
+  background: url(topLeftCorner.png) no-repeat center center;
+}
+
+.topEdge {
+  background: url(topEdge.png) no-repeat center center;
+}
+
+.topRightCorner {
+  background: url(topRightCorner.png) no-repeat center center;
+}
+
+.rightEdge {
+  background: url(rightEdge.png) no-repeat center center;
+}
+
+.bottomRightCorner {
+  background: url(bottomRightCorner.png) no-repeat center center;
+}
+
+.bottomEdge {
+  background: url(bottomEdge.png) no-repeat center center;
+}
+
+.bottomLeftCorner {
+  background: url(bottomLeftCorner.png) no-repeat center center;
+}
+
+.leftEdge {
+  background: url(leftEdge.png) no-repeat center center;
 }
 
 .label {
