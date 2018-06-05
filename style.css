@@ -13,18 +13,24 @@ html, body {
 */
 
 body {
-  background: url(likeFiveThousandTriangles.png) no-repeat;
   margin: auto;
+  background-color: #55ffff;
 }
+
+
 
 .table {
   display: table;
-  position: fixed;
-  top: 25px;
-  left: 5px;
-  right: 5px;
+  position: relative;
   margin: auto;
-  font-size: 8px;
+  font-size: 10px;
+}
+
+#moveCount {
+  position: fixed;
+  bottom: 1px;
+  right: 1px;
+  font-size: 10px;
 }
 
 .row {
