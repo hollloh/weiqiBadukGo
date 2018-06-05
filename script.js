@@ -39,6 +39,7 @@ let moves = [];
 let blackPrisoners = 0;
 let whitePrisoners = 0;
 
+
 let turn = 'b';
 let oppose = 'w';
 if (turn === 'b') {
@@ -48,12 +49,15 @@ if (turn === 'w') {
   oppose = 'b';
 }
 function placeStone() {
-  if (!this.classList.contains('label')) {
+  if (!this.classList.contains('label')
+  && (!this.classList.contains('b'))
+  && (!this.classList.contains('w'))) {
     if (turn === 'b') {
-      if (!this.classList.contains('w')) {
-        this.style.backgroundImage = "url('bbs.png')";
+      if (!this.classList.contains('w')) {                // idk why it only works
+        this.style.backgroundImage = "url('bbs.png')";    // if i check this twice
         this.classList.add('b');
         checkLiberties(this);
+        checkCount(this);
         turn = 'w';
         oppose = 'b';
       }
@@ -63,15 +67,11 @@ function placeStone() {
         this.style.backgroundImage = "url('bws.png')";
         this.classList.add('w');
         checkLiberties(this);
+        checkCount(this);
         turn = 'b';
         oppose = 'w';
       }
     }
-    moves.push(this.id);
-    let moveCount = document.querySelector('#moveCount');
-    let lastMove = moves[moves.length-1];
-    moveCount.innerHTML = 'move : ' + moves.length;
-    let markLastMove = document.getElementById(lastMove);
   }
 }
 
@@ -266,6 +266,33 @@ function checkLiberties(xNode) {
     let x = xNode.connected[i];
     let y = document.getElementById(x);
     y.liberties = xNode.liberties;
+  }
+}
+
+function checkCount(xNode) {
+  moves.push(xNode.id);
+  let moveCount = document.querySelector('#moveCount');
+  moveCount.innerHTML = moves.length;
+  let penultimate = document.getElementById(moves[moves.length-2]);
+  if (xNode.id === moves[0]) {
+    if (turn === 'b') {
+      xNode.style.backgroundImage = "url('blackLastPlayed.png')";
+    }
+    if (turn === 'w') {
+      xNode.style.backgroundImage = "url('whiteLastPlayed.png')";
+    }
+  }
+  if (penultimate !== null) {
+    if (xNode.id === moves[moves.length-1]) {
+      if (turn === 'b') {
+        xNode.style.backgroundImage = "url('blackLastPlayed.png')";
+        penultimate.style.backgroundImage = "url('bws.png')";
+      }
+      if (turn === 'w') {
+        xNode.style.backgroundImage = "url('whiteLastPlayed.png')";
+        penultimate.style.backgroundImage = "url('bbs.png')";
+      }
+    }  
   }
 }
 
