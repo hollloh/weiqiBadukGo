@@ -1,5 +1,6 @@
 
 * {
+  font-size: 10px;
 }
 
 /*
@@ -23,14 +24,24 @@ body {
   display: table;
   position: relative;
   margin: auto;
-  font-size: 10px;
+}
+
+#blackPrisoners {
+  position: fixed;
+  bottom: 20px;
+  right: 1px;
+}
+
+#whitePrisoners {
+  position: fixed;
+  bottom: 10px;
+  right: 1px;
 }
 
 #moveCount {
   position: fixed;
   bottom: 1px;
   right: 1px;
-  font-size: 10px;
 }
 
 .row {
@@ -46,47 +57,47 @@ body {
 }
 
 .board:hover {
-  background: url(bgs.png) no-repeat center center;
+  background: url(assets/bgs.png) no-repeat center center;
 }
 
 .grid {
-  background: url(grid.png) no-repeat center center;  
+  background: url(assets/grid.png) no-repeat center center;  
 }
 
 .starPoint {
-  background: url(starPoint.png) no-repeat center center;    
+  background: url(assets/starPoint.png) no-repeat center center;    
 }
 
 .topLeftCorner {
-  background: url(topLeftCorner.png) no-repeat center center;
+  background: url(assets/topLeftCorner.png) no-repeat center center;
 }
 
 .topEdge {
-  background: url(topEdge.png) no-repeat center center;
+  background: url(assets/topEdge.png) no-repeat center center;
 }
 
 .topRightCorner {
-  background: url(topRightCorner.png) no-repeat center center;
+  background: url(assets/topRightCorner.png) no-repeat center center;
 }
 
 .rightEdge {
-  background: url(rightEdge.png) no-repeat center center;
+  background: url(assets/rightEdge.png) no-repeat center center;
 }
 
 .bottomRightCorner {
-  background: url(bottomRightCorner.png) no-repeat center center;
+  background: url(assets/bottomRightCorner.png) no-repeat center center;
 }
 
 .bottomEdge {
-  background: url(bottomEdge.png) no-repeat center center;
+  background: url(assets/bottomEdge.png) no-repeat center center;
 }
 
 .bottomLeftCorner {
-  background: url(bottomLeftCorner.png) no-repeat center center;
+  background: url(assets/bottomLeftCorner.png) no-repeat center center;
 }
 
 .leftEdge {
-  background: url(leftEdge.png) no-repeat center center;
+  background: url(assets/leftEdge.png) no-repeat center center;
 }
 
 .label {
