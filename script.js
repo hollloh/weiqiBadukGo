@@ -1,32 +1,11 @@
 
 /*
 TODO :
-  1) turtle shape can be recaptured with incorrect amount of stones
-       well, at one point this was a bug, but i can't replicate it
-       and i didn't change anything.
-       best guess : i played too fast and it didn't get all the connections.
+  1) ko rule
+    should be able to support 'super ko' as well
 
-  2) make faster functions
-       if stones aren't added or replaced properly because it can't keep up
-       that's a big problem.
-       i'm pretty sure the functions and methods in 'checkLiberties()' can be optimized
+  2) undo button
 
-  3) undo button
-
-  4) THAT'S terror
-
-  5) wouldn't mind making a new go project that runs mainly on
-       keeping track of the move coordinates played             <--
-       and adjusting the board as such                          <-- i think this is key
-         (currently this project just messily
-          does everything all at the same time).
-      everything is very permanent.
-      new project goals : make game state more lucid.
-        be able to edit game state easily
-          e.g. undos
-               move trees
-
-  6) 
 */
 
 
@@ -338,6 +317,33 @@ function checkSuicide(xNode) {
     console.log('test');
     xNode.classList.remove(oppose);
     xNode.style.backgroundImage = "url('assets/grid.png')";
+    if (xNode.classList.contains('starPoint')) {
+      xNode.style.backgroundImage = "url('assets/starPoint.png')";
+    }
+    if (xNode.classList.contains('topLeftCorner')) {
+      xNode.style.backgroundImage = "url('assets/topLeftCorner.png')";
+    }
+    if (xNode.classList.contains('topEdge')) {
+      xNode.style.backgroundImage = "url('assets/topEdge.png')";
+    }
+    if (xNode.classList.contains('topRightCorner')) {
+      xNode.style.backgroundImage = "url('assets/topRightCorner.png')";
+    }
+    if (xNode.classList.contains('rightEdge')) {
+      xNode.style.backgroundImage = "url('assets/rightEdge.png')";
+    }
+    if (xNode.classList.contains('bottomRightCorner')) {
+      xNode.style.backgroundImage = "url('assets/bottomRightCorner.png')";
+    }
+    if (xNode.classList.contains('bottomEdge')) {
+      xNode.style.backgroundImage = "url('assets/bottomEdge.png')";
+    }
+    if (xNode.classList.contains('bottomLeftCorner')) {
+      xNode.style.backgroundImage = "url('assets/bottomLeftCorner.png')";
+    }
+    if (xNode.classList.contains('leftEdge')) {
+      xNode.style.backgroundImage = "url('assets/leftEdge.png')";
+    }
     turn = oppose;
     if (turn === 'b') {
       oppose = 'w';
