@@ -36,9 +36,8 @@ $(cells).on('click', placeStone);
 
 let moves = [];
 
-let blackPrisoners = 0;
-let whitePrisoners = 0;
-
+let bPris = 0;
+let wPris = 0;
 
 let turn = 'b';
 let oppose = 'w';
@@ -48,28 +47,29 @@ if (turn === 'b') {
 if (turn === 'w') {
   oppose = 'b';
 }
+
 function placeStone() {
-  if (!this.classList.contains('label')
-  && (!this.classList.contains('b'))
-  && (!this.classList.contains('w'))) {
-    if (turn === 'b') {
-      if (!this.classList.contains('w')) {                // idk why it only works
-        this.style.backgroundImage = "url('bbs.png')";    // if i check this twice
+  if (!this.classList.contains('label')) {
+    if (!this.classList.contains('b') && !this.classList.contains('w')) {
+      if (turn === 'b') {
+        this.style.backgroundImage = "url('assets/bbs.png')";
         this.classList.add('b');
         checkLiberties(this);
         checkCount(this);
         turn = 'w';
         oppose = 'b';
+        checkSuicide(this);        
       }
     }
-    if (turn === 'w') {
-      if (!this.classList.contains('b')) {
-        this.style.backgroundImage = "url('bws.png')";
+    if (!this.classList.contains('b') && !this.classList.contains('w')) {
+      if (turn === 'w') {
+        this.style.backgroundImage = "url('assets/bws.png')";
         this.classList.add('w');
         checkLiberties(this);
         checkCount(this);
         turn = 'b';
         oppose = 'w';
+        checkSuicide(this);        
       }
     }
   }
@@ -172,49 +172,54 @@ function checkLiberties(xNode) {
         removeStones(bottomCaptured);
         removeStones(leftCaptured);
 
-        poten.style.backgroundImage = "url('grid.png')";
+        poten.style.backgroundImage = "url('assets/grid.png')";
         if (poten.classList.contains('starPoint')) {
-          poten.style.backgroundImage = "url('starPoint.png')";
+          poten.style.backgroundImage = "url('assets/starPoint.png')";
         }
         if (poten.classList.contains('topLeftCorner')) {
-          poten.style.backgroundImage = "url('topLeftCorner.png')";
+          poten.style.backgroundImage = "url('assets/topLeftCorner.png')";
         }
         if (poten.classList.contains('topEdge')) {
-          poten.style.backgroundImage = "url('topEdge.png')";
+          poten.style.backgroundImage = "url('assets/topEdge.png')";
         }
         if (poten.classList.contains('topRightCorner')) {
-          poten.style.backgroundImage = "url('topRightCorner.png')";
+          poten.style.backgroundImage = "url('assets/topRightCorner.png')";
         }
         if (poten.classList.contains('rightEdge')) {
-          poten.style.backgroundImage = "url('rightEdge.png')";
+          poten.style.backgroundImage = "url('assets/rightEdge.png')";
         }
         if (poten.classList.contains('bottomRightCorner')) {
-          poten.style.backgroundImage = "url('bottomRightCorner.png')";
+          poten.style.backgroundImage = "url('assets/bottomRightCorner.png')";
         }
         if (poten.classList.contains('bottomEdge')) {
-          poten.style.backgroundImage = "url('bottomEdge.png')";
+          poten.style.backgroundImage = "url('assets/bottomEdge.png')";
         }
         if (poten.classList.contains('bottomLeftCorner')) {
-          poten.style.backgroundImage = "url('bottomLeftCorner.png')";
+          poten.style.backgroundImage = "url('assets/bottomLeftCorner.png')";
         }
         if (poten.classList.contains('leftEdge')) {
-          poten.style.backgroundImage = "url('leftEdge.png')";
+          poten.style.backgroundImage = "url('assets/leftEdge.png')";
         }
 
+
+        let blackPrisoners = document.querySelector('#blackPrisoners');
+        let whitePrisoners = document.querySelector('#whitePrisoners');
         if (turn === 'b') {
           if (poten.connected === 0) {
-            blackPrisoners += 1;
+            bPris += 1;
           } else {
-            blackPrisoners += poten.connected.length + 1;
+            bPris += poten.connected.length + 1;
           }
         }
         if (turn === 'w') {
           if (poten.connected === 0) {
-            whitePrisoners += 1;
+            wPris += 1;
           } else {
-            whitePrisoners += poten.connected.length + 1;
+            wPris += poten.connected.length + 1;
           }
         }
+        blackPrisoners.innerHTML = 'black prisoners : ' + bPris;
+        whitePrisoners.innerHTML = 'white prisoners : ' + wPris;
 
         poten.classList.remove(oppose);
 
@@ -222,33 +227,33 @@ function checkLiberties(xNode) {
           let x = poten.connected[i];
           let y = document.getElementById(x);
 
-          y.style.backgroundImage = "url('grid.png')";
+          y.style.backgroundImage = "url('assets/grid.png')";
           if (y.classList.contains('starPoint')) {
-            y.style.backgroundImage = "url('starPoint.png')";
+            y.style.backgroundImage = "url('assets/starPoint.png')";
           }
           if (y.classList.contains('topLeftCorner')) {
-            y.style.backgroundImage = "url('topLeftCorner.png')";
+            y.style.backgroundImage = "url('assets/topLeftCorner.png')";
           }
           if (y.classList.contains('topEdge')) {
-            y.style.backgroundImage = "url('topEdge.png')";
+            y.style.backgroundImage = "url('assets/topEdge.png')";
           }
           if (y.classList.contains('topRightCorner')) {
-            y.style.backgroundImage = "url('topRightCorner.png')";
+            y.style.backgroundImage = "url('assets/topRightCorner.png')";
           }
           if (y.classList.contains('rightEdge')) {
-            y.style.backgroundImage = "url('rightEdge.png')";
+            y.style.backgroundImage = "url('assets/rightEdge.png')";
           }
           if (y.classList.contains('bottomRightCorner')) {
-            y.style.backgroundImage = "url('bottomRightCorner.png')";
+            y.style.backgroundImage = "url('assets/bottomRightCorner.png')";
           }
           if (y.classList.contains('bottomEdge')) {
-            y.style.backgroundImage = "url('bottomEdge.png')";
+            y.style.backgroundImage = "url('assets/bottomEdge.png')";
           }
           if (y.classList.contains('bottomLeftCorner')) {
-            y.style.backgroundImage = "url('bottomLeftCorner.png')";
+            y.style.backgroundImage = "url('assets/bottomLeftCorner.png')";
           }
           if (y.classList.contains('leftEdge')) {
-            y.style.backgroundImage = "url('leftEdge.png')";
+            y.style.backgroundImage = "url('assets/leftEdge.png')";
           }
 
           y.classList.remove(oppose);
@@ -272,27 +277,75 @@ function checkLiberties(xNode) {
 function checkCount(xNode) {
   moves.push(xNode.id);
   let moveCount = document.querySelector('#moveCount');
-  moveCount.innerHTML = moves.length;
+  moveCount.innerHTML = 'move : ' + moves.length;
   let penultimate = document.getElementById(moves[moves.length-2]);
   if (xNode.id === moves[0]) {
+    // black should always go first, but i thought i'd be thorough
     if (turn === 'b') {
-      xNode.style.backgroundImage = "url('blackLastPlayed.png')";
+      xNode.style.backgroundImage = "url('assets/blackLastPlayed.png')";
     }
     if (turn === 'w') {
-      xNode.style.backgroundImage = "url('whiteLastPlayed.png')";
+      xNode.style.backgroundImage = "url('assets/whiteLastPlayed.png')";
     }
   }
   if (penultimate !== null) {
     if (xNode.id === moves[moves.length-1]) {
       if (turn === 'b') {
-        xNode.style.backgroundImage = "url('blackLastPlayed.png')";
-        penultimate.style.backgroundImage = "url('bws.png')";
+        xNode.style.backgroundImage = "url('assets/blackLastPlayed.png')";
+        penultimate.style.backgroundImage = "url('assets/bws.png')";
       }
       if (turn === 'w') {
-        xNode.style.backgroundImage = "url('whiteLastPlayed.png')";
-        penultimate.style.backgroundImage = "url('bbs.png')";
+        xNode.style.backgroundImage = "url('assets/whiteLastPlayed.png')";
+        penultimate.style.backgroundImage = "url('assets/bbs.png')";
       }
-    }  
+    }
+
+    if (penultimate.liberties.length < 1) {
+      penultimate.style.backgroundImage = "url('assets/grid.png')";
+      if (penultimate.classList.contains('starPoint')) {
+        penultimate.style.backgroundImage = "url('assets/starPoint.png')";
+      }
+      if (penultimate.classList.contains('topLeftCorner')) {
+        penultimate.style.backgroundImage = "url('assets/topLeftCorner.png')";
+      }
+      if (penultimate.classList.contains('topEdge')) {
+        penultimate.style.backgroundImage = "url('assets/topEdge.png')";
+      }
+      if (penultimate.classList.contains('topRightCorner')) {
+        penultimate.style.backgroundImage = "url('assets/topRightCorner.png')";
+      }
+      if (penultimate.classList.contains('rightEdge')) {
+        penultimate.style.backgroundImage = "url('assets/rightEdge.png')";
+      }
+      if (penultimate.classList.contains('bottomRightCorner')) {
+        penultimate.style.backgroundImage = "url('assets/bottomRightCorner.png')";
+      }
+      if (penultimate.classList.contains('bottomEdge')) {
+        penultimate.style.backgroundImage = "url('assets/bottomEdge.png')";
+      }
+      if (penultimate.classList.contains('bottomLeftCorner')) {
+        penultimate.style.backgroundImage = "url('assets/bottomLeftCorner.png')";
+      }
+      if (penultimate.classList.contains('leftEdge')) {
+        penultimate.style.backgroundImage = "url('assets/leftEdge.png')";
+      }
+    }
+  }
+}
+
+function checkSuicide(xNode) {
+  if (xNode.liberties.length < 1) {
+    console.log('test');
+    xNode.classList.remove(oppose);
+    xNode.style.backgroundImage = "url('assets/grid.png')";
+    turn = oppose;
+    if (turn === 'b') {
+      oppose = 'w';
+    }
+    if (turn === 'w') {
+      oppose = 'b';
+    }
+    moves.pop();
   }
 }
 
