@@ -10,17 +10,16 @@ TODO
      this boils down to the game recognizing a unique board
      kos don't break the game so it's not absolutely necessary
 
+3) HOVER DOESN'T WORK IN AREAS WHERE STONES HAVE BEEN CAPTURED
+     effect temporarily kept in css
+     jquery has a "hover" effect
+     don't bother fiddling with the css
+
 */
-
-
-
-
-
 
 let board = document.querySelectorAll('.board');
 
 $(board).on('click', initialize);
-
 
 let moves = [];
 
@@ -32,7 +31,6 @@ for (let i = 0; i < board.length; i++) {
 }
 
 function checkSuicide(x) {
-
   x.libertiesDemo = [];
 
   if (moves.length % 2 === 0) { // before actually logging moves
@@ -41,9 +39,7 @@ function checkSuicide(x) {
   if (moves.length % 2 !== 0) {
     x.colorDemo = 'w';
   }
-          
   let coords = x.id.split('x').join('').split('y');
-
   let top = document.getElementById('x' + coords[0] + 'y' + (parseFloat(coords[1]) + 1));
   let right = document.getElementById('x' + (parseFloat(coords[0]) + 1) + 'y' + coords[1]);
   let bottom = document.getElementById('x' + coords[0] + 'y' + (parseFloat(coords[1]) - 1));
@@ -79,7 +75,6 @@ function checkSuicide(x) {
   layer(bottom);
   layer(left);
 
-
   if (x.libertiesDemo < 1) {
     x.suicide = true;
     console.log('x.suicide = '+x.suicide);
@@ -91,7 +86,6 @@ function checkSuicide(x) {
 }
 
 function addStones(x) {
-
   if (x.color === 'neutral') {
     moves.push(x.id);
 
@@ -115,7 +109,6 @@ function addConnectionsAndLiberties() {
   x.connected = [];
 
   let coords = x.id.split('x').join('').split('y');
-
   let top = document.getElementById('x' + coords[0] + 'y' + (parseFloat(coords[1]) + 1));
   let right = document.getElementById('x' + (parseFloat(coords[0]) + 1) + 'y' + coords[1]);
   let bottom = document.getElementById('x' + coords[0] + 'y' + (parseFloat(coords[1]) - 1));
@@ -134,26 +127,13 @@ function addConnectionsAndLiberties() {
         });
         x.connected = Array.from(new Set(x.connected));
 
+
         x.liberties = x.liberties.concat(adj.liberties);
         x.liberties = x.liberties.filter(function(e) {
           return e !== x.id;
         });
         x.liberties = Array.from(new Set(x.liberties));
       }
-      // redundant but necessary
-      if (adj.color !== 'neutral') {
-        if (x.color !== adj.color) {
-          adj.liberties = adj.liberties.filter(function(e) {
-            return e !== x.id;
-          });
-          //especially this part
-          for (let i = 0; i < adj.connected.length; i++) {
-            let y = document.getElementById(adj.connected[i]);
-            y.liberties = adj.liberties;
-          }
-        }
-      }
-
     }
   }
   layer(top);
@@ -180,16 +160,34 @@ function removeStones() {
   let bottom1 = document.getElementById('x' + coords1[0] + 'y' + (parseFloat(coords1[1]) - 1));
   let left1 = document.getElementById('x' + (parseFloat(coords1[0]) - 1) + 'y' + coords1[1]);
 
+  // layer1 removes liberties from stones
+  // and collects prisoners if adjacent stone's liberties reach zero
   function layer1(adj1) {
     if (adj1 !== null) {
       if (adj1.color !== 'neutral') {
         if (adj1.color !== x.color) {
+          //console.log(adj1.id);
           adj1.liberties = adj1.liberties.filter(function(e) {
             return e !== x.id;
           });
+          for (let i = 0; i < adj1.connected.length; i++) {
+            let y = document.getElementById(adj1.connected[i]);
+            y.liberties = adj1.liberties;
+          }
           if (adj1.liberties < 1) {
+            console.log(adj1.id);
+
+            // "magic window" where capturing stone's liberties are where the captured stones are
+            // will not pass layer2 correctly otherwise
             x.liberties.push(adj1.id);
-            adj1.style.backgroundImage = "url('assets/"+adj1.classList[2]+".png')";
+/*
+            for (let i = 0; i < x.connected.length; i++) {
+              let y = document.getElementById(x.connected[i]);   // fix layer two then come back to this
+              y.liberties = x.liberties;
+            }
+            //adj1.style.backgroundImage = "url('assets/"+adj1.classList[2]+".png')";
+            //
+*/
 
             let blackPrisoners = document.querySelector('#blackPrisoners');
             let whitePrisoners = document.querySelector('#whitePrisoners');
@@ -219,35 +217,48 @@ function removeStones() {
   layer1(bottom1);
   layer1(left1);
 
+  // the for loop checks the whole board for stones with zero liberties
+  // layer2 "gives" the captured stone's positions as liberties to the appropriate adjacent stones
   for (let i = 0; i < board.length; i++) {
     let y = document.getElementById(board[i].id);
-    if (y.liberties < 1) {
-      let coords2 = y.id.split('x').join('').split('y');
-      let top2 = document.getElementById('x' + coords2[0] + 'y' + (parseFloat(coords2[1]) + 1));
-      let right2 = document.getElementById('x' + (parseFloat(coords2[0]) + 1) + 'y' + coords2[1]);
-      let bottom2 = document.getElementById('x' + coords2[0] + 'y' + (parseFloat(coords2[1]) - 1));
-      let left2 = document.getElementById('x' + (parseFloat(coords2[0]) - 1) + 'y' + coords2[1]);
-
-      function layer2(adj2) {
-        if (adj2 !== null) {
-          if (adj2.color !== 'neutral') {
-            if (adj2.color !== y.color) {
-              adj2.liberties.push(y.id);
-              y.style.backgroundImage = "url('assets/"+y.classList[2]+".png')";
-            }
-            if (adj2.color === y.color) {
-              y.style.backgroundImage = "url('assets/"+y.classList[2]+".png')";
+    if (y !== null) {
+      if (y.color !== 'neutral') {
+        if (y.liberties < 1) {
+          //console.log(y);
+    
+          let coords2 = y.id.split('x').join('').split('y');
+          let top2 = document.getElementById('x' + coords2[0] + 'y' + (parseFloat(coords2[1]) + 1));
+          let right2 = document.getElementById('x' + (parseFloat(coords2[0]) + 1) + 'y' + coords2[1]);
+          let bottom2 = document.getElementById('x' + coords2[0] + 'y' + (parseFloat(coords2[1]) - 1));
+          let left2 = document.getElementById('x' + (parseFloat(coords2[0]) - 1) + 'y' + coords2[1]);
+    
+          function layer2(adj2) {
+            if (adj2 !== null) {
+              if (adj2.color !== 'neutral') {
+                if (adj2.color !== y.color) {
+                  adj2.liberties.push(y.id);
+                  for (let j = 0; j < adj2.connected.length; j++) {
+                    let z = document.getElementById(adj2.connected[j]);
+                    //console.log(z);
+                    z.liberties = adj2.liberties;
+                  }
+                  y.style.backgroundImage = "url('assets/"+y.classList[2]+".png')";
+                }
+                if (adj2.color === y.color) {
+                  y.style.backgroundImage = "url('assets/"+y.classList[2]+".png')";
+                }
+              }
             }
           }
+          layer2(top2);
+          layer2(right2);
+          layer2(bottom2);
+          layer2(left2);
+    
+          y.color = 'neutral';
+          y.connected = [];
         }
       }
-      layer2(top2);
-      layer2(right2);
-      layer2(bottom2);
-      layer2(left2);
-
-      y.color = 'neutral';
-      y.connected = [];
     }
   }
   for (let i = 0; i < board.length; i++) {
@@ -298,6 +309,7 @@ function initialize(x) {
 }
 
 
+// IN TESTING
 function undo() {
   moves.pop();
 
