@@ -24,17 +24,25 @@ body {
   display: table;
   position: relative;
   margin: auto;
+  top: 20px;
+  min-width: 600px; /* height has this effect automatically */
+}
+
+#undoDiv {
+  position: fixed;
+  bottom: 1px;
+  left: 1px;
 }
 
 #blackPrisoners {
   position: fixed;
-  bottom: 20px;
-  right: 1px;
+  top: 1px;
+  left: 1px;
 }
 
 #whitePrisoners {
   position: fixed;
-  bottom: 10px;
+  top: 1px;
   right: 1px;
 }
 
