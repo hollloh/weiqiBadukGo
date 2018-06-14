@@ -28,6 +28,16 @@ let wPris = 0;
 
 for (let i = 0; i < board.length; i++) {
   board[i].color = 'neutral';
+  board[i].addEventListener('mouseenter', function(e) {
+    if (e.target.color === 'neutral') {
+      e.target.style.backgroundImage = "url('assets/bgs.png')";
+    }
+  });
+  board[i].addEventListener('mouseleave', function(e) {
+    if (e.target.color === 'neutral') {
+      e.target.style.backgroundImage = "url('assets/"+e.target.classList[2]+".png')";
+    }
+  });  
 }
 
 function checkSuicide(x) {
