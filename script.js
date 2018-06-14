@@ -10,11 +10,6 @@ TODO
      this boils down to the game recognizing a unique board
      kos don't break the game so it's not absolutely necessary
 
-3) HOVER DOESN'T WORK IN AREAS WHERE STONES HAVE BEEN CAPTURED
-     effect temporarily kept in css
-     jquery has a "hover" effect
-     don't bother fiddling with the css
-
 */
 
 let board = document.querySelectorAll('.board');
