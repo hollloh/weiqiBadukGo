@@ -4,11 +4,14 @@
 TODO
 
 1) UNDO BUTTON
-     if i figure this out, the project's done in my eyes
+     in progress
+     almost done
 
-2) KO RULE
-     this boils down to the game recognizing a unique board
-     kos don't break the game so it's not absolutely necessary
+2) PASS BUTTON
+
+3) fix ko function
+   
+
 
 */
 
@@ -17,6 +20,8 @@ let board = document.querySelectorAll('.board');
 $(board).on('click', initialize);
 
 let moves = [];
+
+let snapshot = [];
 
 let bPris = 0;
 let wPris = 0;
@@ -82,7 +87,7 @@ function checkSuicide(x) {
 
   if (x.libertiesDemo < 1) {
     x.suicide = true;
-    console.log('x.suicide = '+x.suicide);
+    console.log('illegal move due to suicide');
   }
   for (let i = 0; i < board.length; i++) {
     board[i].colorDemo = '';
@@ -90,11 +95,11 @@ function checkSuicide(x) {
   }
 }
 
+let moveCount = document.querySelector('#moveCount');
 function addStones(x) {
   if (x.color === 'neutral') {
     moves.push(x.id);
 
-    let moveCount = document.querySelector('#moveCount');
     moveCount.innerHTML = 'MOVE : ' + moves.length;
     if (moves.length % 2 !== 0) {
       x.color = 'b';
@@ -106,6 +111,7 @@ function addStones(x) {
     }
   }
 }
+
 
 function addConnectionsAndLiberties() {
   let x = document.getElementById(moves[moves.length-1]);
@@ -157,6 +163,8 @@ function addConnectionsAndLiberties() {
   }
 }
 
+let blackPrisoners = document.querySelector('#blackPrisoners');
+let whitePrisoners = document.querySelector('#whitePrisoners');
 function removeStones() {
   let x = document.getElementById(moves[moves.length-1]);
   let coords1 = x.id.split('x').join('').split('y');
@@ -171,7 +179,6 @@ function removeStones() {
     if (adj1 !== null) {
       if (adj1.color !== 'neutral') {
         if (adj1.color !== x.color) {
-          //console.log(adj1.id);
           adj1.liberties = adj1.liberties.filter(function(e) {
             return e !== x.id;
           });
@@ -180,22 +187,12 @@ function removeStones() {
             y.liberties = adj1.liberties;
           }
           if (adj1.liberties < 1) {
-            console.log(adj1.id);
 
-            // "magic window" where capturing stone's liberties are where the captured stones are
+            // "magic window" where the capturing stone's liberty will be where the captured stones are
             // will not pass layer2 correctly otherwise
             x.liberties.push(adj1.id);
-/*
-            for (let i = 0; i < x.connected.length; i++) {
-              let y = document.getElementById(x.connected[i]);   // fix layer two then come back to this
-              y.liberties = x.liberties;
-            }
-            //adj1.style.backgroundImage = "url('assets/"+adj1.classList[2]+".png')";
-            //
-*/
 
-            let blackPrisoners = document.querySelector('#blackPrisoners');
-            let whitePrisoners = document.querySelector('#whitePrisoners');
+            //where i cut the prisoner elements out if i need to return them
             if (moves.length % 2 !== 0) {
               if (adj1.connected === 0) {
                 bPris += 1;
@@ -228,9 +225,7 @@ function removeStones() {
     let y = document.getElementById(board[i].id);
     if (y !== null) {
       if (y.color !== 'neutral') {
-        if (y.liberties < 1) {
-          //console.log(y);
-    
+        if (y.liberties < 1) {    
           let coords2 = y.id.split('x').join('').split('y');
           let top2 = document.getElementById('x' + coords2[0] + 'y' + (parseFloat(coords2[1]) + 1));
           let right2 = document.getElementById('x' + (parseFloat(coords2[0]) + 1) + 'y' + coords2[1]);
@@ -244,7 +239,6 @@ function removeStones() {
                   adj2.liberties.push(y.id);
                   for (let j = 0; j < adj2.connected.length; j++) {
                     let z = document.getElementById(adj2.connected[j]);
-                    //console.log(z);
                     z.liberties = adj2.liberties;
                   }
                   y.style.backgroundImage = "url('assets/"+y.classList[2]+".png')";
@@ -300,6 +294,60 @@ function displayLastMove() {
   }
 }
 
+function unique(x) {
+  let y = [];
+  function layer() {
+    let bs = [];
+    let ws = [];  
+
+    for (let i = 0; i < board.length; i++) {
+      if (board[i].color !== 'neutral') {
+        if (board[i].color === 'b') {
+          bs.push(board[i].id);
+        }
+        if (board[i].color === 'w') {
+          ws.push(board[i].id);
+        }
+      }
+    }
+    y.push(bs);
+    y.push(ws)
+  }
+  layer();
+
+  snapshot.push(y);
+  let last = snapshot[snapshot.length-1];
+  if (snapshot.length > 1) {
+    let pen = snapshot[snapshot.length-2];
+    if (pen[0].length === last[0].length) {
+      if (pen[1].length === last[1].length) {
+        snapshot.pop();
+        console.log('illegal move due to a stone already being there');
+      }
+    }
+  }
+
+  // comparing new boardstate with all other boardstates
+  // to check if new boardstate is unique
+  for (let i = 0; i < snapshot.length-2; i++) {
+    if (last[0].length !== snapshot[i][0].length) {
+      if (last[1].length !== snapshot[i][1].length) {
+        return false;
+      }
+    }
+    for (let j = 0; j < last[0].length; j++) {
+      if (last[0][j] !== snapshot[i][0][j]) {
+        for (let n = 0; n < last[1].length; n++) {
+          if (last[1][j] !== snapshot[i][1][j]) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;  
+  }
+}
+
 function initialize(x) {
   x = this;
   checkSuicide(x);
@@ -308,15 +356,18 @@ function initialize(x) {
     addConnectionsAndLiberties();
     removeStones();
     displayLastMove();
+    console.log(unique());
   }
-  x.suicide = '';
-
+  else {
+    x.suicide = false;
+  }
 }
 
 
 // IN TESTING
 function undo() {
   moves.pop();
+  moveCount.innerHTML = 'MOVE : ' + moves.length;
 
   for (let i = 0; i < board.length; i++) {
     let x = board[i];
@@ -324,15 +375,105 @@ function undo() {
     x.style = "url('assets/"+x.classList[2]+".png')";
     x.liberties = [];
     x.connected = [];
-    bPris = 0;
-    wPris = 0;
   }
-  if (moves.length > 0) {
-    for (let i = 0; i < moves.length; i++) {
-      let x = document.getElementById(moves[i]);
-      console.log(moves);
+  let pen = snapshot[snapshot.length-2];
+
+  for (let i = 0; i < pen[0].length; i++) {
+    let x = document.getElementById(pen[0][i]);
+    x.color = 'b';
+    x.style.backgroundImage = "url('assets/bbs.png')";
+  }
+  for (let i = 0; i < pen[1].length; i++) {
+    let x = document.getElementById(pen[1][i]);
+    x.color = 'w';
+    x.style.backgroundImage = "url('assets/bws.png')";
+  }
+
+  // forward iteration
+  for (let i = 0; i < pen.length; i++) {
+    for (let j = 0; j < pen[i].length; j++) {
+      let x = document.getElementById(pen[i][j]);
+      let coords = x.id.split('x').join('').split('y');
+      let top = document.getElementById('x' + coords[0] + 'y' + (parseFloat(coords[1]) + 1));
+      let right = document.getElementById('x' + (parseFloat(coords[0]) + 1) + 'y' + coords[1]);
+      let bottom = document.getElementById('x' + coords[0] + 'y' + (parseFloat(coords[1]) - 1));
+      let left = document.getElementById('x' + (parseFloat(coords[0]) - 1) + 'y' + coords[1]);
+
+      function layer(adj) {
+        if (adj !== null) {
+          if (adj.color === 'neutral') {
+            x.liberties.push(adj.id);
+          }
+          if (adj.color !== 'neutral') {
+            if (adj.color === x.color) {
+              x.connected.push(adj.id);
+              x.connected = x.connected.concat(adj.connected);
+              // remove itself and duplicates from x.connected on the backward iteration
+            }
+          }  
+        }
+      }
+      layer(top);
+      layer(right);
+      layer(bottom);
+      layer(left);
     }
   }
+  // backward iteration to get appropriate connections for stones
+  // also handles reapplying liberties in a slightly different way than previous functions
+  for (let i = pen.length-1; i >= 0; i--) {
+    for (let j = pen[i].length-1; j >= 0; j--) {
+      let x = document.getElementById(pen[i][j]);
+      let coords = x.id.split('x').join('').split('y');
+      let top = document.getElementById('x' + coords[0] + 'y' + (parseFloat(coords[1]) + 1));
+      let right = document.getElementById('x' + (parseFloat(coords[0]) + 1) + 'y' + coords[1]);
+      let bottom = document.getElementById('x' + coords[0] + 'y' + (parseFloat(coords[1]) - 1));
+      let left = document.getElementById('x' + (parseFloat(coords[0]) - 1) + 'y' + coords[1]);
+
+      function layer(adj) {
+        if (adj !== null) {
+          if (adj.color !== 'neutral') {
+            if (adj.color === x.color) {
+              x.connected.push(adj.id);
+              x.connected = x.connected.concat(adj.connected);
+              x.connected = x.connected.filter(function(e) {
+                return e !== x.id;
+              });
+              x.connected = Array.from(new Set(x.connected));            
+            }
+            if (adj.color !== x.color) {
+              x.liberties = x.liberties.filter(function(e) {
+                return e !== adj.id;
+              });
+            }
+          }  
+        }
+      }
+      layer(top);
+      layer(right);
+      layer(bottom);
+      layer(left);
+
+      for (let n = 0; n < x.connected.length; n++) {
+        let y = document.getElementById(x.connected[n]);
+        y.liberties = y.liberties.concat(x.liberties);
+        y.liberties = Array.from(new Set(y.liberties));
+      }
+    }
+  }
+
+  // reduce prisoners, if any, here
+  let last = snapshot[snapshot.length-1];
+  if (pen[0].length > last[0].length) {
+    wPris -= pen[0].length - last[0].length;
+    whitePrisoners.innerHTML = 'WHITE PRISONERS : ' + wPris;
+  }
+  if (pen[1].length > last[1].length) {
+    bPris -= pen[1].length - last[1].length;
+    blackPrisoners.innerHTML = 'BLACK PRISONERS : ' + bPris;
+  }
+  snapshot.pop();
+  displayLastMove(); 
 }
 
 let undoDiv = document.getElementById('undoDiv');
