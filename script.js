@@ -3,28 +3,22 @@
 
 TODO
 
-1) UNDO BUTTON
-     in progress
-     almost done
+1) PASS BUTTON
+     might be easy to make
+     just make sure it doesn't break things when implemented
 
-2) PASS BUTTON
-
-3) fix ko function
-   
-
+2) MAKE THINGS FANCY
+   a) give board a wood background
+   b) make hover stone transparent (see lines, dots and wood grain through it)
+      let it match players turn color
 
 */
 
 let board = document.querySelectorAll('.board');
-
 $(board).on('click', initialize);
 
 let moves = [];
-
 let snapshot = [];
-
-let bPris = 0;
-let wPris = 0;
 
 for (let i = 0; i < board.length; i++) {
   board[i].color = 'neutral';
@@ -86,8 +80,8 @@ function checkSuicide(x) {
   layer(left);
 
   if (x.libertiesDemo < 1) {
+    console.log('suicide');
     x.suicide = true;
-    console.log('illegal move due to suicide');
   }
   for (let i = 0; i < board.length; i++) {
     board[i].colorDemo = '';
@@ -99,7 +93,6 @@ let moveCount = document.querySelector('#moveCount');
 function addStones(x) {
   if (x.color === 'neutral') {
     moves.push(x.id);
-
     moveCount.innerHTML = 'MOVE : ' + moves.length;
     if (moves.length % 2 !== 0) {
       x.color = 'b';
@@ -111,7 +104,6 @@ function addStones(x) {
     }
   }
 }
-
 
 function addConnectionsAndLiberties() {
   let x = document.getElementById(moves[moves.length-1]);
@@ -165,6 +157,8 @@ function addConnectionsAndLiberties() {
 
 let blackPrisoners = document.querySelector('#blackPrisoners');
 let whitePrisoners = document.querySelector('#whitePrisoners');
+let bPris = 0;
+let wPris = 0;
 function removeStones() {
   let x = document.getElementById(moves[moves.length-1]);
   let coords1 = x.id.split('x').join('').split('y');
@@ -187,12 +181,10 @@ function removeStones() {
             y.liberties = adj1.liberties;
           }
           if (adj1.liberties < 1) {
-
             // "magic window" where the capturing stone's liberty will be where the captured stones are
             // will not pass layer2 correctly otherwise
             x.liberties.push(adj1.id);
 
-            //where i cut the prisoner elements out if i need to return them
             if (moves.length % 2 !== 0) {
               if (adj1.connected === 0) {
                 bPris += 1;
@@ -294,7 +286,7 @@ function displayLastMove() {
   }
 }
 
-function unique(x) {
+function takeSnapshot() {
   let y = [];
   function layer() {
     let bs = [];
@@ -322,29 +314,36 @@ function unique(x) {
     if (pen[0].length === last[0].length) {
       if (pen[1].length === last[1].length) {
         snapshot.pop();
-        console.log('illegal move due to a stone already being there');
       }
     }
   }
+}
 
-  // comparing new boardstate with all other boardstates
-  // to check if new boardstate is unique
-  for (let i = 0; i < snapshot.length-2; i++) {
-    if (last[0].length !== snapshot[i][0].length) {
-      if (last[1].length !== snapshot[i][1].length) {
-        return false;
-      }
-    }
-    for (let j = 0; j < last[0].length; j++) {
-      if (last[0][j] !== snapshot[i][0][j]) {
-        for (let n = 0; n < last[1].length; n++) {
-          if (last[1][j] !== snapshot[i][1][j]) {
+// many rules pertain to ko but i went with the elegant and universal:
+// check to see each new stone creates a unique board
+// otherwise fix the mistake with undo()
+function ko() {
+  let last = snapshot[snapshot.length-1];
+  for (let i = 0; i < snapshot.length-1; i++) {
+    if (last[0].length === snapshot[i][0].length) {
+      if (last[1].length === snapshot[i][1].length) {
+        // storing the value of halfway is key here
+        // check if 'last' is an exact duplicate of 'halfway'
+        let halfway = snapshot[i];
+        for (let j = 0; j < last[0].length; j++) {
+          if (last[0][j] !== halfway[0][j]) {
             return false;
           }
+          for (let n = 0; n < last[1].length; n++) {
+            if (last[1][n] !== halfway[1][n]) {
+              return false;
+            }
+          }
+          console.log('ko');
+          return true;
         }
       }
     }
-    return true;  
   }
 }
 
@@ -356,15 +355,17 @@ function initialize(x) {
     addConnectionsAndLiberties();
     removeStones();
     displayLastMove();
-    console.log(unique());
+    takeSnapshot();
+    ko();
+    if (ko()) {
+      undo();
+    }
   }
   else {
     x.suicide = false;
   }
 }
 
-
-// IN TESTING
 function undo() {
   moves.pop();
   moveCount.innerHTML = 'MOVE : ' + moves.length;
@@ -375,6 +376,10 @@ function undo() {
     x.style = "url('assets/"+x.classList[2]+".png')";
     x.liberties = [];
     x.connected = [];
+  }
+  if (moves.length < 1) {
+    snapshot.pop();
+    return;
   }
   let pen = snapshot[snapshot.length-2];
 
@@ -388,7 +393,6 @@ function undo() {
     x.color = 'w';
     x.style.backgroundImage = "url('assets/bws.png')";
   }
-
   // forward iteration
   for (let i = 0; i < pen.length; i++) {
     for (let j = 0; j < pen[i].length; j++) {
@@ -461,7 +465,6 @@ function undo() {
       }
     }
   }
-
   // reduce prisoners, if any, here
   let last = snapshot[snapshot.length-1];
   if (pen[0].length > last[0].length) {
