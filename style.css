@@ -16,7 +16,7 @@ html, body {
 
 body {
   margin: auto;
-  background-color: #55ffff;
+  background-color: #ffffff;
 }
 
 
@@ -43,6 +43,8 @@ body {
   position: relative;
   top: 35px; /* keep so top elements don't go off page */
   min-width: 560px; /* board size; cell size(width & height) * 20; (20x20 board) */
+  background: url(assets/boardBackground2.jpg) no-repeat center center;
+  border: solid 1px #000000;
 }
 
 #blackPrisoners {
@@ -63,6 +65,7 @@ body {
   top: -33px;
   left: 400px;
   padding: 3px;
+  cursor: pointer;
 }
 
 #moveCount {
@@ -84,11 +87,11 @@ body {
 }
 
 .grid {
-  background: url(assets/grid.png) no-repeat center center;  
+  background: url(assets/grid.png) no-repeat center center;
 }
 
 .starPoint {
-  background: url(assets/starPoint.png) no-repeat center center;    
+  background: url(assets/starPoint.png) no-repeat center center;
 }
 
 .topLeftCorner {
@@ -127,4 +130,9 @@ body {
   background: transparent;
 }
 
+.数 {
+  writing-mode: vertical-rl;
+  -webkit-writing-mode: vertical-rl;
+  -ms-writing-mode: vertical-rl;
+}
 
