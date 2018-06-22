@@ -43,7 +43,7 @@ body {
   position: relative;
   top: 35px; /* keep so top elements don't go off page */
   min-width: 560px; /* board size; cell size(width & height) * 20; (20x20 board) */
-  background: url(assets/boardBackground2.jpg) no-repeat center center;
+  background: url(assets/boardWithGrid.jpg) no-repeat center center;
   border: solid 1px #000000;
 }
 
@@ -59,11 +59,20 @@ body {
   left: 200px;
 }
 
+#passDiv {
+  border: 1px solid #000000;
+  position: absolute;
+  top: -33px;
+  left: 350px;
+  padding: 3px;
+  cursor: pointer;  
+}
+
 #undoDiv {
   border: 1px solid #000000;
   position: absolute;
   top: -33px;
-  left: 400px;
+  left: 430px;
   padding: 3px;
   cursor: pointer;
 }
