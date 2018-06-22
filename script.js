@@ -6,6 +6,11 @@ TODO
 1) PASS BUTTON
      recently implemented
      problems might arise but so far seems robust enough
+     REALLY messing with pass and undo with no stones on the board
+     messes things up
+
+     which may actually be normal practice if setting up handicap games
+
 
 2) MAYBE CLEAN UP HOW GRID IS MADE
      to get the nice hover effect i just drew the grid on to the board backgroud
@@ -271,20 +276,51 @@ function displayLastMove() {
   let x = document.getElementById(moves[moves.length-1]);
   let penultimate = document.getElementById(moves[moves.length-2]);
   let passPen = document.getElementById(moves[moves.length-3]);
-  if (moves[moves.length-1] === 'pass') {
+
+  if (moves[moves.length-1] === 'pass' && moves.length < 2) {
     return;
   }
-  if (moves[moves.length-2] === 'pass') {
-    if (moves.length % 2 !== 0 ) {
-      x.style.backgroundImage = "url('assets/blackLastPlayed.png')";
-      passPen.style.backgroundImage = "url('assets/bbs.png')";
+  if (moves.length < 3) {
+    if (moves[moves.length-1] === 'pass') {
+      if (moves.length % 2 !== 0) {
+        penultimate.style.backgroundImage = "url('assets/whiteLastPlayed.png')";
+      }
+      if (moves.length % 2 === 0) {
+        penultimate.style.backgroundImage = "url('assets/blackLastPlayed.png')";      
+      }
     }
-    if (moves.length % 2 === 0) {
-      x.style.backgroundImage = "url('assets/whiteLastPlayed.png')";
-      passPen.style.backgroundImage = "url('assets/bws.png')";
+    if (moves[moves.length-2] === 'pass') {
+      if (moves.length % 2 !== 0) {
+        x.style.backgroundImage = "url('assets/blackLastPlayed.png')";
+      }
+      if (moves.length % 2 === 0) {
+        x.style.backgroundImage = "url('assets/whiteLastPlayed.png')";      
+      }
     }  
   }
-  else {
+
+  if (moves.length > 2) {
+    if (moves[moves.length-1] === 'pass') {
+      if (moves.length % 2 !== 0) {
+        penultimate.style.backgroundImage = "url('assets/whiteLastPlayed.png')"; 
+      }
+      if (moves.length % 2 === 0) {
+        penultimate.style.backgroundImage = "url('assets/blackLastPlayed.png')"; 
+      }
+    }
+    if (moves[moves.length-2] === 'pass') {
+      if (moves.length % 2 !== 0 ) {
+        x.style.backgroundImage = "url('assets/blackLastPlayed.png')";
+        passPen.style.backgroundImage = "url('assets/bbs.png')";
+      }
+      if (moves.length % 2 === 0) {
+        x.style.backgroundImage = "url('assets/whiteLastPlayed.png')";
+        passPen.style.backgroundImage = "url('assets/bws.png')";
+      }
+    }
+  }
+
+  if (x !== null) {
     if (x.id === moves[0]) {
       // black should always go first, but i thought i'd be thorough
       if (moves.length % 2 !== 0) {
@@ -308,7 +344,6 @@ function displayLastMove() {
         penultimate.style.backgroundImage = "url('assets/"+penultimate.classList[2]+".png')";
       }
     }
-  
   }
 }
 
@@ -398,6 +433,7 @@ function pass() {
   if (moves[moves.length-2] === 'pass') {
     moves.pop();
   }
+  moveCount.innerHTML = 'MOVE : ' + moves.length;
   displayLastMove();
 }
 
@@ -407,6 +443,7 @@ passDiv.addEventListener('click', pass);
 function undo() {
   if (moves[moves.length-1] === 'pass') {
     moves.pop();
+    moveCount.innerHTML = 'MOVE : ' + moves.length;
     return;
   }
   moves.pop();
@@ -421,6 +458,12 @@ function undo() {
   }
   if (moves.length < 1) {
     snapshot.pop();
+    displayLastMove();
+    return;
+  }
+  if (moves.length < 2 && moves[0] === 'pass') {
+    snapshot.pop();
+    displayLastMove();
     return;
   }
   let pen = snapshot[snapshot.length-2];
