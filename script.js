@@ -4,13 +4,18 @@
 TODO
 
 1) PASS BUTTON
-     might be easy to make
-     just make sure it doesn't break things when implemented
+     recently implemented
+     problems might arise but so far seems robust enough
 
-2) MAKE THINGS FANCY
-   a) give board a wood background
-   b) make hover stone transparent (see lines, dots and wood grain through it)
-      let it match players turn color
+2) MAYBE CLEAN UP HOW GRID IS MADE
+     to get the nice hover effect i just drew the grid on to the board backgroud
+     rendering some of the cell classnames moot
+     e.g.: 'starPoint, grid, topRightCorner'
+     also most the pictures in the assets folder are pieces of the board
+
+     but if i resize the board in any way in the future, they could be very helpful
+     maybe
+     finalizing the project will include removing one of the ways i draw the board
 
 */
 
@@ -24,14 +29,19 @@ for (let i = 0; i < board.length; i++) {
   board[i].color = 'neutral';
   board[i].addEventListener('mouseenter', function(e) {
     if (e.target.color === 'neutral') {
-      e.target.style.backgroundImage = "url('assets/bgs.png')";
+      if (moves.length % 2 === 0) {
+        e.target.style.backgroundImage = "url('assets/blackHover.png')";
+      }
+      if (moves.length % 2 !== 0) {
+        e.target.style.backgroundImage = "url('assets/whiteHover.png')";
+      }
     }
   });
   board[i].addEventListener('mouseleave', function(e) {
     if (e.target.color === 'neutral') {
       e.target.style.backgroundImage = "url('assets/"+e.target.classList[2]+".png')";
     }
-  });  
+  });
 }
 
 function checkSuicide(x) {
@@ -260,17 +270,31 @@ function removeStones() {
 function displayLastMove() {
   let x = document.getElementById(moves[moves.length-1]);
   let penultimate = document.getElementById(moves[moves.length-2]);
-  if (x.id === moves[0]) {
-    // black should always go first, but i thought i'd be thorough
-    if (moves.length % 2 !== 0) {
+  let passPen = document.getElementById(moves[moves.length-3]);
+  if (moves[moves.length-1] === 'pass') {
+    return;
+  }
+  if (moves[moves.length-2] === 'pass') {
+    if (moves.length % 2 !== 0 ) {
       x.style.backgroundImage = "url('assets/blackLastPlayed.png')";
+      passPen.style.backgroundImage = "url('assets/bbs.png')";
     }
     if (moves.length % 2 === 0) {
       x.style.backgroundImage = "url('assets/whiteLastPlayed.png')";
-    }
+      passPen.style.backgroundImage = "url('assets/bws.png')";
+    }  
   }
-  if (penultimate !== null) {
-    if (x.id === moves[moves.length-1]) {
+  else {
+    if (x.id === moves[0]) {
+      // black should always go first, but i thought i'd be thorough
+      if (moves.length % 2 !== 0) {
+        x.style.backgroundImage = "url('assets/blackLastPlayed.png')";
+      }
+      if (moves.length % 2 === 0) {
+        x.style.backgroundImage = "url('assets/whiteLastPlayed.png')";
+      }
+    }
+    if (penultimate !== null) {
       if (moves.length % 2 !== 0) {
         x.style.backgroundImage = "url('assets/blackLastPlayed.png')";
         penultimate.style.backgroundImage = "url('assets/bws.png')";
@@ -279,10 +303,12 @@ function displayLastMove() {
         x.style.backgroundImage = "url('assets/whiteLastPlayed.png')";
         penultimate.style.backgroundImage = "url('assets/bbs.png')";
       }
+  
+      if (penultimate.liberties.length < 1) {
+        penultimate.style.backgroundImage = "url('assets/"+penultimate.classList[2]+".png')";
+      }
     }
-    if (penultimate.liberties.length < 1) {
-      penultimate.style.backgroundImage = "url('assets/"+penultimate.classList[2]+".png')";
-    }
+  
   }
 }
 
@@ -366,7 +392,23 @@ function initialize(x) {
   }
 }
 
+
+function pass() {
+  moves.push('pass');
+  if (moves[moves.length-2] === 'pass') {
+    moves.pop();
+  }
+  displayLastMove();
+}
+
+let passDiv = document.getElementById('passDiv');
+passDiv.addEventListener('click', pass);
+
 function undo() {
+  if (moves[moves.length-1] === 'pass') {
+    moves.pop();
+    return;
+  }
   moves.pop();
   moveCount.innerHTML = 'MOVE : ' + moves.length;
 
@@ -460,6 +502,13 @@ function undo() {
 
       for (let n = 0; n < x.connected.length; n++) {
         let y = document.getElementById(x.connected[n]);
+        y.connected = x.connected;
+        y.connected.push(x.id);
+        y.connected = y.connected.filter(function(e) {
+          return e !== y.id;
+        });
+        y.connected = Array.from(new Set(y.connected));
+
         y.liberties = y.liberties.concat(x.liberties);
         y.liberties = Array.from(new Set(y.liberties));
       }
@@ -475,6 +524,7 @@ function undo() {
     bPris -= pen[1].length - last[1].length;
     blackPrisoners.innerHTML = 'BLACK PRISONERS : ' + bPris;
   }
+
   snapshot.pop();
   displayLastMove(); 
 }
