@@ -1,0 +1,149 @@
+
+* {
+  font-size: 15px;
+  font-family: 'Abel', sans-serif;
+}
+
+body {
+  margin: auto;
+  background-color: #ffffff;
+}
+
+a {
+  color: #000000;
+  text-decoration: none;
+}
+
+.outer { /* vertical centering */
+  display: table;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+.middle { /* vertical centering */
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.inner { /* vertical centering */
+  margin-left: auto;
+  margin-right: auto;
+  width: 560px; /* match board size */
+}
+
+.table {
+  display: table;
+  position: relative;
+  top: 35px; /* keep so top elements don't go off page */
+  min-width: 550px; /* board size; cell size(width & height) * 20; (20x20 board) */
+  background: url(../assets/boardLight.jpg) no-repeat center center;
+  border: solid 1px #000000;
+}
+
+#blackPrisoners {
+  position: absolute;
+  top: -25px;
+  left: 1px;
+}
+
+#whitePrisoners {
+  position: absolute;
+  top: -25px;
+  left: 150px;
+}
+
+#passDiv {
+  font-size: 25px;
+  border: 1px solid #000000;
+  position: absolute;
+  top: -45px;
+  left: 310px;
+  padding: 3px;
+  cursor: pointer;  
+}
+
+#undoDiv {
+  font-size: 25px;
+  border: 1px solid #000000;
+  position: absolute;
+  top: -45px;
+  left: 410px;
+  padding: 3px;
+  cursor: pointer;
+}
+
+#moveCount {
+  position: absolute;
+  top: -25px;
+  right: 1px;
+}
+
+#bigBoardLink {
+  border: 1px solid #000000;
+  position: absolute;
+  bottom: 0px;
+  right: -57px;
+  padding: 3px;
+}
+
+.row {
+  display: table-row;  
+}
+
+.cell {
+  display: table-cell;
+  width: 55px;
+  height: 55px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.grid {
+  background: url(../assets/grid.png) no-repeat center center;
+}
+
+.starPoint {
+  background: url(../assets/starPoint.png) no-repeat center center;
+}
+
+.topLeftCorner {
+  background: url(../assets/topLeftCorner.png) no-repeat center center;
+}
+
+.topEdge {
+  background: url(../assets/topEdge.png) no-repeat center center;
+}
+
+.topRightCorner {
+  background: url(../assets/topRightCorner.png) no-repeat center center;
+}
+
+.rightEdge {
+  background: url(../assets/rightEdge.png) no-repeat center center;
+}
+
+.bottomRightCorner {
+  background: url(../assets/bottomRightCorner.png) no-repeat center center;
+}
+
+.bottomEdge {
+  background: url(../assets/bottomEdge.png) no-repeat center center;
+}
+
+.bottomLeftCorner {
+  background: url(../assets/bottomLeftCorner.png) no-repeat center center;
+}
+
+.leftEdge {
+  background: url(../assets/leftEdge.png) no-repeat center center;
+}
+
+.label {
+  background: transparent;
+}
+
+
+.数 {
+  font-size: 15px;
+}
