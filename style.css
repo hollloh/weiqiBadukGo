@@ -4,21 +4,15 @@
   font-family: 'Abel', sans-serif;
 }
 
-/*
-html, body {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
-*/
-
 body {
   margin: auto;
   background-color: #ffffff;
 }
 
+a {
+  color: #000000;
+  text-decoration: none;
+}
 
 .outer { /* vertical centering */
   display: table;
@@ -43,7 +37,9 @@ body {
   position: relative;
   top: 35px; /* keep so top elements don't go off page */
   min-width: 560px; /* board size; cell size(width & height) * 20; (20x20 board) */
-  background: url(assets/boardWithGrid.jpg) no-repeat center center;
+
+  background: url(assets/boardLight.jpg) no-repeat center center;
+
   border: solid 1px #000000;
 }
 
@@ -65,7 +61,7 @@ body {
   top: -33px;
   left: 350px;
   padding: 3px;
-  cursor: pointer;  
+  cursor: pointer;
 }
 
 #undoDiv {
@@ -81,6 +77,14 @@ body {
   position: absolute;
   top: -25px;
   right: 14px;
+}
+
+#knifeFightLink {
+  border: 1px solid #000000;
+  position: absolute;
+  bottom: 0px;
+  right: -33px;
+  padding: 3px;
 }
 
 .row {
@@ -139,9 +143,10 @@ body {
   background: transparent;
 }
 
+
 .数 {
+  font-size: 10px;
   writing-mode: vertical-rl;
   -webkit-writing-mode: vertical-rl;
   -ms-writing-mode: vertical-rl;
 }
-
