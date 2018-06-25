@@ -3,29 +3,23 @@
 
 TODO
 
-1) PASS BUTTON
-     recently implemented
-     problems might arise but so far seems robust enough
-     REALLY messing with pass and undo with no stones on the board
-     messes things up
-
-     which may actually be normal practice if setting up handicap games
+1) MAKE AI
+     start with random moves, work from there
 
 
-2) MAYBE CLEAN UP HOW GRID IS MADE
-     to get the nice hover effect i just drew the grid on to the board backgroud
-     rendering some of the cell classnames moot
-     e.g.: 'starPoint, grid, topRightCorner'
-     also most the pictures in the assets folder are pieces of the board
+2) CHROME DOESN'T LIKE VERTICAL CHINESE
 
-     but if i resize the board in any way in the future, they could be very helpful
-     maybe
-     finalizing the project will include removing one of the ways i draw the board
+     writes vertically, but direction as a whole goes left to right (rather than top to bottom)
+
+     numbers aren't completely at fault, but when zooming out to the maximum (on desktop), numbers make it VERY warped
+     font size stays at a readable size even if zoomed completely out
+
+     but even without chinese unicode, chrome stretches 'table' vertically roughly 10px
 
 */
 
 let board = document.querySelectorAll('.board');
-$(board).on('click', initialize);
+$(board).on('mouseup', initialize);
 
 let moves = [];
 let snapshot = [];
